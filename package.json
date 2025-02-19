@@ -19,9 +19,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "mvc-express": "file:",
-    "mysql2": "^3.12.0",
-    "template-fullstack": "file:.."
+    "mysql2": "^3.12.0"
   },
   "rules": {
     "no-console": [

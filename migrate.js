@@ -8,6 +8,7 @@ const migrate = async () => {
 
   const connection = await mysql.createConnection({
     host: DB_HOST,
+    port: process.env.DB_PORT,
     user: DB_USER,
     password: DB_PASSWORD,
     multipleStatements: true,
