@@ -7,7 +7,7 @@ class ArticleManager extends AbstractManager {
 
   find(id) {
     return this.connection.query(
-      `select ${this.table}.id, ${this.table}.title, ${this.table}.content, ${this.table}.created_at,  
+      `select ${this.table}.*,  
     user.lastname, user.firstname, category.title as category_title from  ${this.table}
     JOIN category ON category.id = ${this.table}.category_id
     JOIN user ON ${this.table}.user_id = user.id where ${this.table}.id = ?`,
@@ -17,8 +17,7 @@ class ArticleManager extends AbstractManager {
 
   // Override
   findAll() {
-    return this.connection
-      .query(`select ${this.table}.id, ${this.table}.title, ${this.table}.content, ${this.table}.created_at,  
+    return this.connection.query(`select ${this.table}.*,  
     user.lastname, user.firstname, category.title as category_title from  ${this.table}
     JOIN category ON category.id = ${this.table}.category_id
     JOIN user ON ${this.table}.user_id = user.id`);
