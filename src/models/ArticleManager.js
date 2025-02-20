@@ -7,8 +7,10 @@ class ArticleManager extends AbstractManager {
 
   find(id) {
     return this.connection.query(
-      `select ${this.table}.*, category.title as category_title  from  ${this.table} 
-    JOIN category ON category.id = ${this.table}.category_id where ${this.table}.id = ?`,
+      `select ${this.table}.id, ${this.table}.title, ${this.table}.content, ${this.table}.created_at,  
+    user.lastname, user.firstname, category.title as category_title from  ${this.table}
+    JOIN category ON category.id = ${this.table}.category_id
+    JOIN user ON ${this.table}.user_id = user.id where ${this.table}.id = ?`,
       [id]
     );
   }

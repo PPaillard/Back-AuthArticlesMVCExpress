@@ -28,31 +28,32 @@ const read = (req, res) => {
     });
 };
 
-const edit = (req, res) => {
+const edit = async (req, res) => {
   const article = req.body;
 
   // TODO validations (length, format...)
 
   article.id = parseInt(req.params.id, 10);
 
-  models.article
-    .update(article)
-    .then(([result]) => {
-      if (result.affectedRows === 0) {
-        res.sendStatus(404);
-      } else {
-        res.sendStatus(204);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-    });
+  try {
+    const [dbArticles] = await models.article.find(req.params.id);
+
+    // si article non trouvé
+    if (!dbArticles[0] == null) return res.sendStatus(404);
+    // Si pas autorisé
+    console.log(dbArticles[0]);
+    console.log(req.payloads.sub);
+    if (dbArticles[0].user_id !== req.payloads.sub) return res.sendStatus(403);
+    await models.article.update(article);
+    return res.sendStatus(204);
+  } catch (error) {
+    console.error(error);
+    return res.sendStatus(500);
+  }
 };
 
 const add = (req, res) => {
   const article = req.body;
-  console.log(article);
   article.user_id = req.payloads.sub;
 
   // TODO validations (length, format...)
@@ -68,20 +69,22 @@ const add = (req, res) => {
     });
 };
 
-const destroy = (req, res) => {
-  models.article
-    .delete(req.params.id)
-    .then(([result]) => {
-      if (result.affectedRows === 0) {
-        res.sendStatus(404);
-      } else {
-        res.sendStatus(204);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      res.sendStatus(500);
-    });
+const destroy = async (req, res) => {
+  const id = parseInt(req.params.id, 10);
+
+  try {
+    const [dbArticles] = await models.article.find(id);
+    // si article non trouvé
+    if (dbArticles[0] == null) return res.sendStatus(404);
+    // Si pas autorisé
+    if (dbArticles[0].user_id !== req.payloads.sub) return res.sendStatus(403);
+    // On delete
+    await models.article.delete(id);
+    return res.sendStatus(204);
+  } catch (error) {
+    console.error(error);
+    return res.sendStatus(500);
+  }
 };
 
 module.exports = {
